@@ -1,0 +1,43 @@
+{
+  "home": {
+    "headline": "Discover every bottle",
+    "subheadline": "Snap a photo, our AI sommelier tells you everything",
+    "cta": "Photograph the bottle"
+  },
+  "scan": {
+    "instruction": "Frame the label",
+    "capture": "Capture",
+    "retake": "Retake",
+    "analyze": "Analyze"
+  },
+  "loading": {
+    "messages": [
+      "The sommelier is nosing...",
+      "Consulting the cellar...",
+      "Deciphering the vintage...",
+      "Pairing the flavors..."
+    ]
+  },
+  "result": {
+    "another": "Analyze another bottle",
+    "sections": {
+      "identity": "Identity",
+      "visual": "Appearance",
+      "nose": "On the nose",
+      "palate": "On the palate",
+      "temperature": "Serving temperature",
+      "pairings": "Pairs with"
+    },
+    "confidence": {
+      "alta": "High confidence",
+      "media": "Medium confidence",
+      "bassa": "Low confidence",
+      "nulla": "Bottle not recognized"
+    }
+  },
+  "error": {
+    "not_recognized": "Cannot read this label",
+    "retry": "Try again with a clearer photo",
+    "api_error": "Connection error, please retry"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "home": {
+    "headline": "Scopri ogni bottiglia",
+    "subheadline": "Fotografa un vino, il nostro sommelier AI ti racconta tutto",
+    "cta": "Fotografa la bottiglia"
+  },
+  "scan": {
+    "instruction": "Inquadra l'etichetta",
+    "capture": "Scatta",
+    "retake": "Riprovi",
+    "analyze": "Analizza"
+  },
+  "loading": {
+    "messages": [
+      "Il sommelier sta annusando...",
+      "Consultando la cantina...",
+      "Decifrando l'annata...",
+      "Abbinando i sapori..."
+    ]
+  },
+  "result": {
+    "another": "Analizza un'altra bottiglia",
+    "sections": {
+      "identity": "Identità",
+      "visual": "All'occhio",
+      "nose": "Al naso",
+      "palate": "In bocca",
+      "temperature": "Temperatura di servizio",
+      "pairings": "Si abbina con"
+    },
+    "confidence": {
+      "alta": "Analisi certa",
+      "media": "Analisi probabile",
+      "bassa": "Analisi incerta",
+      "nulla": "Bottiglia non riconosciuta"
+    }
+  },
+  "error": {
+    "not_recognized": "Non riesco a leggere questa etichetta",
+    "retry": "Riprova con una foto più nitida",
+    "api_error": "Errore di connessione, riprova"
+  }
+}
