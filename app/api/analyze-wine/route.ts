@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { anthropicClient, buildPrompt } from "@/lib/anthropic";
-import { WineAnalysis } from "@/lib/types";
+import { BilingualWineAnalysis } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   try {
-    const { imageBase64, lang } = (await req.json()) as {
+    const { imageBase64 } = (await req.json()) as {
       imageBase64: string;
-      lang: "it" | "en";
     };
 
     if (!imageBase64) {
@@ -16,11 +15,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const prompt = buildPrompt(lang || "it");
+    const prompt = buildPrompt();
 
     const response = await anthropicClient.messages.create({
       model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
+      max_tokens: 1600,
       messages: [
         {
           role: "user",
@@ -50,11 +49,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const wineData: WineAnalysis = JSON.parse(jsonMatch[0]);
+    const wineData: BilingualWineAnalysis = JSON.parse(jsonMatch[0]);
 
-    if (wineData.confidenza === "nulla") {
+    if (wineData.it.confidenza === "nulla") {
       return NextResponse.json(
-        { error: wineData.descrizione, data: wineData },
+        { error: wineData.it.descrizione, data: wineData },
         { status: 422 }
       );
     }

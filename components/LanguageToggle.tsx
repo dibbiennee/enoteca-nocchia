@@ -7,7 +7,15 @@ export default function LanguageToggle() {
   const currentLang = i18n.language;
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex gap-1 text-sm font-medium" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+    <div
+      className="fixed top-4 right-4 z-50 flex gap-1 text-sm font-medium rounded-lg px-2 py-1"
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        background: "rgba(255,255,255,0.85)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+      }}
+    >
       <button
         onClick={() => i18n.changeLanguage("it")}
         className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded transition-colors duration-200"

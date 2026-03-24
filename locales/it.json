@@ -1,7 +1,8 @@
 {
   "home": {
     "headline": "Scopri ogni bottiglia",
-    "subheadline": "Fotografa un vino, il nostro sommelier AI ti racconta tutto",
+    "subheadline_1": "Fotografa un vino,",
+    "subheadline_2": "il nostro sommelier AI ti racconta tutto",
     "cta": "Fotografa la bottiglia"
   },
   "scan": {
@@ -20,6 +21,8 @@
   },
   "result": {
     "another": "Analizza un'altra bottiglia",
+    "produced_in": "Prodotto in:",
+    "description_label": "Descrizione",
     "sections": {
       "identity": "Identità",
       "visual": "All'occhio",

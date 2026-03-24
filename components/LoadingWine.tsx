@@ -8,6 +8,7 @@ export default function LoadingWine() {
   const messages = t("loading.messages", { returnObjects: true }) as string[];
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,6 +20,19 @@ export default function LoadingWine() {
     }, 2000);
     return () => clearInterval(interval);
   }, [messages.length]);
+
+  // Simulated progress: fast at start, slows toward 90%, never reaches 100% until redirect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 90) return prev + 0.1;
+        if (prev >= 70) return prev + 0.3;
+        if (prev >= 40) return prev + 0.8;
+        return prev + 2;
+      });
+    }, 200);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div
@@ -33,11 +47,23 @@ export default function LoadingWine() {
         <div
           className="absolute inset-0 rounded-full animate-spin"
           style={{
-            border: "3px solid var(--color-border)",
+            border: "3px solid rgba(120,94,20,0.2)",
             borderTopColor: "var(--color-gold)",
           }}
         />
       </div>
+
+      {/* Progress bar */}
+      <div className="w-48 md:w-64 h-1 rounded-full overflow-hidden" style={{ background: "rgba(120,94,20,0.15)" }}>
+        <div
+          className="h-full rounded-full transition-all duration-300 ease-out"
+          style={{
+            width: `${Math.min(progress, 95)}%`,
+            background: "var(--color-gold)",
+          }}
+        />
+      </div>
+
       <p
         className="text-lg md:text-xl italic transition-opacity duration-300 px-6 text-center"
         style={{

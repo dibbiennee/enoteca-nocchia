@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { WineAnalysis } from "@/lib/types";
 import TastingNotes from "./TastingNotes";
 import FoodPairing from "./FoodPairing";
+import { IconEye, IconNose, IconPalate, IconThermometer, IconWineGlass } from "./Icons";
 
 interface WineCardProps {
   wine: WineAnalysis;
@@ -16,7 +17,7 @@ export default function WineCard({ wine }: WineCardProps) {
     // Header + Identity
     <div key="header" className="space-y-4">
       <h1
-        className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
+        className="text-4xl md:text-5xl font-bold leading-tight"
         style={{
           fontFamily: "var(--font-playfair)",
           color: "var(--color-gold)",
@@ -25,51 +26,51 @@ export default function WineCard({ wine }: WineCardProps) {
         {wine.nome_vino}
       </h1>
 
-      <p className="text-base md:text-lg" style={{ color: "var(--color-muted)" }}>
-        {wine.produttore}
-        {wine.annata && ` · ${wine.annata}`}
-      </p>
+      {(wine.regione || wine.paese) && (
+        <p className="text-sm md:text-base" style={{ color: "var(--color-muted)" }}>
+          {t("result.produced_in")} {[wine.regione, wine.paese].filter(Boolean).join(", ")}
+        </p>
+      )}
+
+      {wine.produttore && (
+        <p className="text-base md:text-lg" style={{ color: "var(--color-muted)" }}>
+          {wine.produttore}
+          {wine.annata && wine.annata !== "N.V." && ` · ${wine.annata}`}
+        </p>
+      )}
 
       <div className="flex flex-wrap gap-2">
-        {wine.regione && (
+        {wine.denominazione && wine.denominazione.trim() !== "" && (
           <span
             className="px-3 py-1.5 rounded-full text-xs md:text-sm font-medium"
             style={{
-              border: "1px solid rgba(201,168,76,0.3)",
-              color: "var(--color-gold)",
-            }}
-          >
-            {wine.regione}
-          </span>
-        )}
-        {wine.denominazione && (
-          <span
-            className="px-3 py-1.5 rounded-full text-xs md:text-sm font-medium"
-            style={{
-              border: "1px solid rgba(201,168,76,0.3)",
+              border: "1px solid rgba(120,94,20,0.3)",
+              background: "rgba(120,94,20,0.08)",
               color: "var(--color-gold)",
             }}
           >
             {wine.denominazione}
           </span>
         )}
-        {wine.vitigni.map((v, i) => (
+        {wine.vitigni.filter(v => v && v.trim() !== "").map((v, i) => (
           <span
             key={i}
             className="px-3 py-1.5 rounded-full text-xs md:text-sm font-medium"
             style={{
-              border: "1px solid rgba(201,168,76,0.3)",
+              border: "1px solid rgba(120,94,20,0.3)",
+              background: "rgba(120,94,20,0.08)",
               color: "var(--color-gold)",
             }}
           >
             {v}
           </span>
         ))}
-        {wine.gradazione && (
+        {wine.gradazione && wine.gradazione.trim() !== "" && (
           <span
             className="px-3 py-1.5 rounded-full text-xs md:text-sm font-medium"
             style={{
-              border: "1px solid rgba(201,168,76,0.3)",
+              border: "1px solid rgba(120,94,20,0.3)",
+              background: "rgba(120,94,20,0.08)",
               color: "var(--color-text)",
             }}
           >
@@ -84,10 +85,22 @@ export default function WineCard({ wine }: WineCardProps) {
       key="descrizione"
       className="rounded-xl p-4 md:p-6"
       style={{
-        borderLeft: "3px solid var(--color-bordeaux)",
         background: "var(--color-surface)",
+        border: "1px solid rgba(120,94,20,0.15)",
       }}
     >
+      <div className="flex items-center gap-3 mb-3">
+        <span style={{ color: "var(--color-gold)" }}><IconWineGlass size={18} /></span>
+        <h3
+          className="font-bold uppercase tracking-wider text-sm"
+          style={{
+            fontFamily: "var(--font-playfair)",
+            color: "var(--color-gold)",
+          }}
+        >
+          {t("result.description_label")}
+        </h3>
+      </div>
       <p
         className="italic text-[0.95rem] md:text-base leading-relaxed"
         style={{ color: "var(--color-text)" }}
@@ -99,7 +112,7 @@ export default function WineCard({ wine }: WineCardProps) {
     // Note visive
     <TastingNotes
       key="visive"
-      icon="👁"
+      icon={<IconEye size={18} />}
       title={t("result.sections.visual")}
       text={wine.note_visive}
     />,
@@ -107,7 +120,7 @@ export default function WineCard({ wine }: WineCardProps) {
     // Note olfattive
     <TastingNotes
       key="olfattive"
-      icon="🌸"
+      icon={<IconNose size={18} />}
       title={t("result.sections.nose")}
       text={wine.note_olfattive}
     />,
@@ -115,7 +128,7 @@ export default function WineCard({ wine }: WineCardProps) {
     // Note gustative
     <TastingNotes
       key="gustative"
-      icon="👅"
+      icon={<IconPalate size={18} />}
       title={t("result.sections.palate")}
       text={wine.note_gustative}
     />,
@@ -126,13 +139,13 @@ export default function WineCard({ wine }: WineCardProps) {
       className="rounded-xl p-4 md:p-6"
       style={{
         background: "var(--color-surface)",
-        border: "1px solid rgba(201,168,76,0.15)",
+        border: "1px solid rgba(120,94,20,0.15)",
       }}
     >
       <div className="flex items-center gap-3 mb-3">
-        <span className="text-2xl md:text-3xl">🌡</span>
+        <span style={{ color: "var(--color-gold)" }}><IconThermometer size={18} /></span>
         <h3
-          className="font-bold uppercase tracking-wider text-[0.8rem] md:text-[0.9rem]"
+          className="font-bold uppercase tracking-wider text-sm"
           style={{
             fontFamily: "var(--font-playfair)",
             color: "var(--color-gold)",
@@ -143,7 +156,7 @@ export default function WineCard({ wine }: WineCardProps) {
       </div>
       <p
         className="text-[0.95rem] md:text-base leading-relaxed"
-        style={{ color: "var(--color-text)" }}
+        style={{ color: "var(--color-text)", textAlign: "left", wordBreak: "normal", overflowWrap: "break-word" }}
       >
         {wine.temperatura_servizio}
       </p>

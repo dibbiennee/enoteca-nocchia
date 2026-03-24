@@ -1,5 +1,7 @@
 "use client";
 
+import { IconUtensils } from "./Icons";
+
 interface FoodPairingProps {
   title: string;
   pairings: string[];
@@ -11,13 +13,13 @@ export default function FoodPairing({ title, pairings }: FoodPairingProps) {
       className="rounded-xl p-4 md:p-6"
       style={{
         background: "var(--color-surface)",
-        border: "1px solid rgba(201,168,76,0.15)",
+        border: "1px solid rgba(120,94,20,0.15)",
       }}
     >
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-2xl md:text-3xl">🍽</span>
+        <span style={{ color: "var(--color-gold)" }}><IconUtensils size={18} /></span>
         <h3
-          className="font-bold uppercase tracking-wider text-[0.8rem] md:text-[0.9rem]"
+          className="font-bold uppercase tracking-wider text-sm"
           style={{
             fontFamily: "var(--font-playfair)",
             color: "var(--color-gold)",
@@ -30,11 +32,11 @@ export default function FoodPairing({ title, pairings }: FoodPairingProps) {
         {pairings.map((item, i) => (
           <span
             key={i}
-            className="px-3 py-1.5 rounded-full text-sm md:text-base font-medium"
+            className="px-2.5 py-1 rounded-full text-xs md:text-sm font-medium"
             style={{
-              background: "rgba(139,26,26,0.25)",
-              color: "var(--color-text)",
-              border: "1px solid rgba(139,26,26,0.4)",
+              background: "rgba(139,26,26,0.08)",
+              color: "var(--color-bordeaux)",
+              border: "1px solid rgba(139,26,26,0.25)",
             }}
           >
             {item}

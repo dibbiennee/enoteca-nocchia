@@ -15,3 +15,8 @@ export interface WineAnalysis {
   descrizione: string;
   confidenza: "alta" | "media" | "bassa" | "nulla";
 }
+
+export interface BilingualWineAnalysis {
+  it: WineAnalysis;
+  en: WineAnalysis;
+}

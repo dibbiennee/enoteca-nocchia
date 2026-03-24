@@ -3,37 +3,38 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { WineAnalysis } from "@/lib/types";
+import { BilingualWineAnalysis } from "@/lib/types";
 import WineCard from "@/components/WineCard";
 import LanguageToggle from "@/components/LanguageToggle";
+import { IconWineGlass } from "@/components/Icons";
 import "@/lib/i18n";
 
-const confidenceColors: Record<string, string> = {
-  alta: "#22c55e",
-  media: "#eab308",
-  bassa: "#f97316",
-  nulla: "#ef4444",
-};
-
 export default function ResultPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
-  const [wine, setWine] = useState<WineAnalysis | null>(null);
+  const [bilingualWine, setBilingualWine] = useState<BilingualWineAnalysis | null>(null);
+  const [bottleImage, setBottleImage] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("lastWineAnalysis");
     if (stored) {
       try {
-        setWine(JSON.parse(stored));
+        setBilingualWine(JSON.parse(stored));
       } catch {
         router.push("/scan");
       }
     } else {
       router.push("/scan");
     }
+
+    const img = localStorage.getItem("wineBottleImage");
+    if (img) setBottleImage(img);
   }, [router]);
 
-  if (!wine) return null;
+  if (!bilingualWine) return null;
+
+  const lang = (i18n.language === "en" ? "en" : "it") as "it" | "en";
+  const wine = bilingualWine[lang] || bilingualWine.it;
 
   // Schermata errore se confidenza nulla
   if (wine.confidenza === "nulla") {
@@ -48,7 +49,9 @@ export default function ResultPage() {
       >
         <LanguageToggle />
 
-        <div className="text-6xl md:text-7xl animate-fade-in-1">🍷</div>
+        <div className="animate-fade-in-1" style={{ color: "var(--color-bordeaux)" }}>
+          <IconWineGlass size={72} />
+        </div>
 
         <h2
           className="text-2xl md:text-3xl font-bold animate-fade-in-2"
@@ -72,8 +75,7 @@ export default function ResultPage() {
           className="mt-4 px-8 py-4 rounded-xl text-base md:text-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 animate-fade-in-3"
           style={{
             background: "var(--color-bordeaux)",
-            color: "var(--color-gold)",
-            border: "1px solid var(--color-gold)",
+            color: "#FFFFFF",
           }}
         >
           {t("error.retry")}
@@ -84,45 +86,45 @@ export default function ResultPage() {
 
   return (
     <div
-      className="min-h-dvh px-5 md:px-8 lg:px-12 py-8 md:py-10"
+      className="min-h-dvh"
       style={{
         background: "var(--color-bg)",
-        paddingTop: "calc(env(safe-area-inset-top, 0px) + 2rem)",
+        paddingTop: "env(safe-area-inset-top)",
       }}
     >
       <LanguageToggle />
 
-      <div className="max-w-2xl mx-auto">
-        {/* Badge confidenza */}
-        <div className="flex justify-center mb-6 md:mb-8">
-          <span
-            className="px-4 py-1.5 rounded-full text-xs md:text-sm font-medium uppercase tracking-wider animate-fade-in-1"
-            style={{
-              color: confidenceColors[wine.confidenza],
-              border: `1px solid ${confidenceColors[wine.confidenza]}40`,
-              background: `${confidenceColors[wine.confidenza]}15`,
-            }}
-          >
-            {t(`result.confidence.${wine.confidenza}`)}
-          </span>
+      {/* Hero bottiglia */}
+      {bottleImage && (
+        <div className="flex justify-center items-center pt-8 pb-4 animate-fade-in-1">
+          <img
+            src={bottleImage}
+            alt={wine.nome_vino}
+            className="object-contain drop-shadow-xl rounded-2xl"
+            style={{ maxHeight: "340px", maxWidth: "260px", width: "auto", height: "auto" }}
+            onError={() => setBottleImage(null)}
+          />
         </div>
+      )}
 
-        {/* Wine Card */}
-        <WineCard wine={wine} />
+      <div className="px-5 md:px-8 lg:px-12 py-6 md:py-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)" }}>
+        <div className="max-w-2xl mx-auto">
+          {/* Wine Card */}
+          <WineCard wine={wine} />
 
-        {/* Bottone altra bottiglia — inline, non fixed */}
-        <div className="mt-8 mb-8">
-          <button
-            onClick={() => router.push("/scan")}
-            className="w-full min-h-[52px] py-4 rounded-xl text-base md:text-lg font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95"
-            style={{
-              background: "var(--color-bordeaux)",
-              color: "var(--color-gold)",
-              border: "1px solid var(--color-gold)",
-            }}
-          >
-            {t("result.another")}
-          </button>
+          {/* Bottone altra bottiglia */}
+          <div className="mt-8 mb-8">
+            <button
+              onClick={() => router.push("/scan")}
+              className="w-full min-h-[52px] py-4 rounded-xl text-base md:text-lg font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95 active:brightness-90"
+              style={{
+                background: "var(--color-bordeaux)",
+                color: "#FFFFFF",
+              }}
+            >
+              {t("result.another")}
+            </button>
+          </div>
         </div>
       </div>
     </div>

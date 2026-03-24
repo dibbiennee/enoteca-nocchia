@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState, useCallback } from "react";
+import { IconCamera } from "./Icons";
 
 interface CameraStreamProps {
   onCapture: (base64: string) => void;
@@ -56,7 +57,7 @@ export default function CameraStream({ onCapture }: CameraStreamProps) {
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
 
-    const maxDim = 1000;
+    const maxDim = 800;
     const scale = Math.min(1, maxDim / Math.max(video.videoWidth, video.videoHeight));
     canvas.width = video.videoWidth * scale;
     canvas.height = video.videoHeight * scale;
@@ -65,7 +66,7 @@ export default function CameraStream({ onCapture }: CameraStreamProps) {
     if (!ctx) return;
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const base64 = canvas.toDataURL("image/jpeg", 0.8).split(",")[1];
+    const base64 = canvas.toDataURL("image/jpeg", 0.7).split(",")[1];
     onCapture(base64);
   }, [onCapture]);
 
@@ -79,7 +80,7 @@ export default function CameraStream({ onCapture }: CameraStreamProps) {
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        <div className="text-5xl md:text-6xl">📷</div>
+        <IconCamera size={64} className="md:w-20 md:h-20" />
         <p
           className="text-base md:text-lg max-w-md"
           style={{ color: "var(--color-text)" }}
@@ -137,7 +138,7 @@ export default function CameraStream({ onCapture }: CameraStreamProps) {
           style={{
             background: "rgba(255,255,255,0.9)",
             borderColor: "var(--color-gold)",
-            boxShadow: "0 0 20px rgba(201,168,76,0.3)",
+            boxShadow: "0 0 20px rgba(120,94,20,0.3)",
           }}
         />
       </div>

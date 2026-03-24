@@ -30,41 +30,59 @@ export default function ScanPage() {
       const res = await fetch("/api/analyze-wine", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageBase64: capturedImage,
-          lang: i18n.language as "it" | "en",
-        }),
+        body: JSON.stringify({ imageBase64: capturedImage }),
       });
 
       const data = await res.json();
+      let bilingualData = null;
+
+      const emptyWine = {
+        nome_vino: "",
+        produttore: "",
+        annata: "",
+        regione: "",
+        paese: "",
+        denominazione: "",
+        vitigni: [] as string[],
+        gradazione: "",
+        temperatura_servizio: "",
+        note_visive: "",
+        note_olfattive: "",
+        note_gustative: "",
+        abbinamenti: [] as string[],
+        descrizione: data.error || t("error.api_error"),
+        confidenza: "nulla" as const,
+      };
 
       if (!res.ok) {
         if (data.data) {
-          localStorage.setItem("lastWineAnalysis", JSON.stringify(data.data));
+          bilingualData = data.data;
         } else {
-          localStorage.setItem(
-            "lastWineAnalysis",
-            JSON.stringify({
-              nome_vino: "",
-              produttore: "",
-              annata: "",
-              regione: "",
-              paese: "",
-              denominazione: "",
-              vitigni: [],
-              gradazione: "",
-              temperatura_servizio: "",
-              note_visive: "",
-              note_olfattive: "",
-              note_gustative: "",
-              abbinamenti: [],
-              descrizione: data.error || t("error.api_error"),
-              confidenza: "nulla" as const,
-            })
-          );
+          bilingualData = { it: emptyWine, en: { ...emptyWine, descrizione: data.error || "Analysis error" } };
         }
       } else {
-        localStorage.setItem("lastWineAnalysis", JSON.stringify(data));
+        bilingualData = data;
+      }
+
+      localStorage.setItem("lastWineAnalysis", JSON.stringify(bilingualData));
+
+      // Fetch clean product image from Bing
+      const wineIt = bilingualData.it;
+      if (wineIt.confidenza !== "nulla" && wineIt.nome_vino) {
+        const q = [wineIt.nome_vino, wineIt.produttore, wineIt.annata].filter(Boolean).join(" ");
+        try {
+          const imgRes = await fetch(`/api/wine-image?q=${encodeURIComponent(q)}`);
+          const imgData = await imgRes.json();
+          if (imgData.imageUrl) {
+            localStorage.setItem("wineBottleImage", imgData.imageUrl);
+          } else {
+            localStorage.removeItem("wineBottleImage");
+          }
+        } catch {
+          localStorage.removeItem("wineBottleImage");
+        }
+      } else {
+        localStorage.removeItem("wineBottleImage");
       }
 
       router.push("/result");
@@ -119,8 +137,7 @@ export default function ScanPage() {
             className="flex-1 min-h-[52px] py-4 rounded-xl text-base md:text-lg font-medium transition-colors"
             style={{
               background: "var(--color-bordeaux)",
-              color: "var(--color-gold)",
-              border: "1px solid var(--color-gold)",
+              color: "#FFFFFF",
             }}
           >
             {t("scan.analyze")}
@@ -134,6 +151,21 @@ export default function ScanPage() {
   return (
     <>
       <LanguageToggle />
+      <button
+        onClick={() => router.push("/")}
+        className="fixed top-4 left-4 z-50 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg"
+        style={{
+          paddingTop: "env(safe-area-inset-top)",
+          background: "rgba(0,0,0,0.4)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+          color: "#FFFFFF",
+        }}
+      >
+        <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
       <CameraStream onCapture={handleCapture} />
     </>
   );

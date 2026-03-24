@@ -1,7 +1,8 @@
 {
   "home": {
     "headline": "Discover every bottle",
-    "subheadline": "Snap a photo, our AI sommelier tells you everything",
+    "subheadline_1": "Snap a photo,",
+    "subheadline_2": "our AI sommelier tells you everything",
     "cta": "Photograph the bottle"
   },
   "scan": {
@@ -20,6 +21,8 @@
   },
   "result": {
     "another": "Analyze another bottle",
+    "produced_in": "Produced in:",
+    "description_label": "Description",
     "sections": {
       "identity": "Identity",
       "visual": "Appearance",

@@ -14,16 +14,6 @@ export default function HomePage() {
       className="relative min-h-dvh flex flex-col items-center justify-center px-6 md:px-12"
       style={{ background: "var(--color-bg)" }}
     >
-      {/* Texture noise SVG sottile */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "256px 256px",
-        }}
-      />
-
       <LanguageToggle />
 
       {/* Contenuto centrato con animazione staggered */}
@@ -41,27 +31,28 @@ export default function HomePage() {
 
         {/* Sottotitolo */}
         <p
-          className="text-base md:text-lg lg:text-xl max-w-xs md:max-w-md animate-fade-in-2"
+          className="text-base md:text-lg lg:text-xl max-w-xs md:max-w-md animate-fade-in-2 text-center"
           style={{ color: "var(--color-muted)" }}
         >
-          {t("home.subheadline")}
+          {t("home.subheadline_1")}
+          <br />
+          {t("home.subheadline_2")}
         </p>
 
         {/* Linea decorativa */}
         <div
-          className="w-16 md:w-20 h-px animate-fade-in-2"
-          style={{ background: "var(--color-gold)", opacity: 0.4 }}
+          className="w-16 md:w-24 animate-fade-in-2"
+          style={{ background: "var(--color-gold)", opacity: 0.4, height: "2px" }}
         />
 
         {/* CTA */}
         <button
           onClick={() => router.push("/scan")}
-          className="mt-4 px-8 md:px-10 py-4 md:py-5 rounded-xl text-lg md:text-xl font-medium transition-all duration-300 hover:scale-105 active:scale-95 animate-fade-in-3"
+          className="w-full max-w-xs px-8 py-4 rounded-xl text-base md:text-lg font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95 active:brightness-90 animate-fade-in-3"
           style={{
             background: "var(--color-bordeaux)",
-            color: "var(--color-gold)",
-            border: "1px solid var(--color-gold)",
-            boxShadow: "0 0 30px rgba(139,26,26,0.3)",
+            color: "#FFFFFF",
+            boxShadow: "0 4px 20px rgba(139,26,26,0.2)",
           }}
         >
           {t("home.cta")}
