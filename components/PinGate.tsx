@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-const PIN_CODE = "1926";
+const PIN_CODE = "2222";
 const SESSION_KEY = "nocchia_pin_ok";
 
 export default function PinGate({ children }: { children: React.ReactNode }) {
