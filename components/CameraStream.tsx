@@ -66,7 +66,7 @@ export default function CameraStream({ onCapture }: CameraStreamProps) {
     if (!ctx) return;
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const base64 = canvas.toDataURL("image/jpeg", 0.7).split(",")[1];
+    const base64 = canvas.toDataURL("image/jpeg", 0.6).split(",")[1];
     onCapture(base64);
   }, [onCapture]);
 
@@ -134,6 +134,7 @@ export default function CameraStream({ onCapture }: CameraStreamProps) {
       >
         <button
           onClick={handleCapture}
+          aria-label="Scatta foto"
           className="w-[72px] h-[72px] md:w-[88px] md:h-[88px] rounded-full border-4 transition-transform active:scale-90"
           style={{
             background: "rgba(255,255,255,0.9)",

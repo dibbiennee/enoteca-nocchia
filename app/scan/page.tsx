@@ -65,26 +65,7 @@ export default function ScanPage() {
       }
 
       localStorage.setItem("lastWineAnalysis", JSON.stringify(bilingualData));
-
-      // Fetch clean product image from Bing
-      const wineIt = bilingualData.it;
-      if (wineIt.confidenza !== "nulla" && wineIt.nome_vino) {
-        const q = [wineIt.nome_vino, wineIt.produttore, wineIt.annata].filter(Boolean).join(" ");
-        try {
-          const imgRes = await fetch(`/api/wine-image?q=${encodeURIComponent(q)}`);
-          const imgData = await imgRes.json();
-          if (imgData.imageUrl) {
-            localStorage.setItem("wineBottleImage", imgData.imageUrl);
-          } else {
-            localStorage.removeItem("wineBottleImage");
-          }
-        } catch {
-          localStorage.removeItem("wineBottleImage");
-        }
-      } else {
-        localStorage.removeItem("wineBottleImage");
-      }
-
+      localStorage.removeItem("wineBottleImage"); // Will be fetched on result page
       router.push("/result");
     } catch {
       setIsAnalyzing(false);
@@ -153,6 +134,7 @@ export default function ScanPage() {
       <LanguageToggle />
       <button
         onClick={() => router.push("/")}
+        aria-label="Indietro"
         className="fixed top-4 left-4 z-50 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg"
         style={{
           paddingTop: "env(safe-area-inset-top)",

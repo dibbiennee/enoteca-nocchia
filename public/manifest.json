@@ -3,7 +3,7 @@
   "short_name": "Nocchia",
   "description": "Il tuo sommelier AI tascabile",
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FFFFFF",
   "theme_color": "#8B1A1A",

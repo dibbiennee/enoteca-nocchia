@@ -17,18 +17,41 @@ export default function ResultPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("lastWineAnalysis");
-    if (stored) {
-      try {
-        setBilingualWine(JSON.parse(stored));
-      } catch {
-        router.push("/scan");
-      }
-    } else {
+    if (!stored) {
       router.push("/scan");
+      return;
     }
 
-    const img = localStorage.getItem("wineBottleImage");
-    if (img) setBottleImage(img);
+    let parsed;
+    try {
+      parsed = JSON.parse(stored);
+    } catch {
+      router.push("/scan");
+      return;
+    }
+    setBilingualWine(parsed);
+
+    // Check cached image first
+    const cachedImg = localStorage.getItem("wineBottleImage");
+    if (cachedImg) {
+      setBottleImage(cachedImg);
+      return;
+    }
+
+    // Fetch bottle image async (doesn't block page render)
+    const wineIt = parsed.it;
+    if (wineIt?.confidenza !== "nulla" && wineIt?.nome_vino) {
+      const q = [wineIt.nome_vino, wineIt.produttore, wineIt.annata].filter(Boolean).join(" ");
+      fetch(`/api/wine-image?q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.imageUrl) {
+            localStorage.setItem("wineBottleImage", data.imageUrl);
+            setBottleImage(data.imageUrl);
+          }
+        })
+        .catch(() => {}); // Silently fail — page works without image
+    }
   }, [router]);
 
   if (!bilingualWine) return null;

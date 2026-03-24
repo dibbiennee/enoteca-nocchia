@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
+import PinGate from "@/components/PinGate";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -31,8 +32,6 @@ export const viewport: Viewport = {
   themeColor: "#8B1A1A",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
@@ -46,7 +45,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className="min-h-dvh bg-[var(--color-bg)] text-[var(--color-text)] font-[var(--font-dm-sans)] antialiased">
-        {children}
+        <PinGate>{children}</PinGate>
       </body>
     </html>
   );

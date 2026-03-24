@@ -1,17 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { anthropicClient, buildPrompt } from "@/lib/anthropic";
 import { BilingualWineAnalysis } from "@/lib/types";
+import { rateLimit } from "@/lib/rate-limit";
+
+const MAX_BASE64_LENGTH = 10_000_000; // ~7.5MB decoded
 
 export async function POST(req: NextRequest) {
   try {
-    const { imageBase64 } = (await req.json()) as {
-      imageBase64: string;
-    };
+    // Rate limit: max 15 requests per minute per IP
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+    if (!rateLimit(ip, 15)) {
+      return NextResponse.json(
+        { error: "Troppe richieste. Riprova tra un minuto." },
+        { status: 429 }
+      );
+    }
 
-    if (!imageBase64) {
+    const body = await req.json();
+    const imageBase64 = body?.imageBase64 as string | undefined;
+
+    if (!imageBase64 || typeof imageBase64 !== "string") {
       return NextResponse.json(
         { error: "Immagine mancante" },
         { status: 400 }
+      );
+    }
+
+    // Validate base64 size
+    if (imageBase64.length > MAX_BASE64_LENGTH) {
+      return NextResponse.json(
+        { error: "Immagine troppo grande (max 7MB)" },
+        { status: 413 }
       );
     }
 
@@ -49,7 +68,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const wineData: BilingualWineAnalysis = JSON.parse(jsonMatch[0]);
+    let wineData: BilingualWineAnalysis;
+    try {
+      wineData = JSON.parse(jsonMatch[0]);
+    } catch {
+      return NextResponse.json(
+        { error: "Risposta AI non valida" },
+        { status: 422 }
+      );
+    }
 
     if (wineData.it.confidenza === "nulla") {
       return NextResponse.json(

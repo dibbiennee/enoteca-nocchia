@@ -1,4 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
+
+function isValidImageUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") return false;
+    // Block internal/private IPs
+    const host = parsed.hostname;
+    if (host === "localhost" || host.startsWith("127.") || host.startsWith("10.") || host.startsWith("192.168.")) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 async function searchBingImages(query: string, preferPng = false): Promise<string | null> {
   try {
@@ -23,18 +37,15 @@ async function searchBingImages(query: string, preferPng = false): Promise<strin
     for (const m of matches.slice(0, 12)) {
       const imgUrl = m.replace('murl&quot;:&quot;', '');
       const lower = imgUrl.toLowerCase();
-      // Skip junk
       if (lower.includes("favicon") || lower.includes("logo") || lower.includes("banner")) continue;
-      // Skip packs/cases
       if (lower.includes("6-bott") || lower.includes("12-bott") || lower.includes("cassa") || lower.includes("case-of") || lower.includes("pack-of")) continue;
-      // Skip reflection/mirror images
       if (lower.includes("riflesso") || lower.includes("reflection") || lower.includes("mirror")) continue;
+      if (!isValidImageUrl(imgUrl)) continue;
       candidates.push(imgUrl);
     }
 
     if (candidates.length === 0) return null;
 
-    // Prefer .png URLs (more likely to have true transparency)
     if (preferPng) {
       const pngUrl = candidates.find(u => u.toLowerCase().endsWith(".png"));
       if (pngUrl) return pngUrl;
@@ -47,33 +58,28 @@ async function searchBingImages(query: string, preferPng = false): Promise<strin
 }
 
 export async function GET(req: NextRequest) {
-  const query = req.nextUrl.searchParams.get("q");
-  if (!query) {
-    return NextResponse.json({ error: "Query mancante" }, { status: 400 });
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+  if (!rateLimit(ip, 30)) {
+    return NextResponse.json({ error: "Troppe richieste" }, { status: 429 });
   }
 
-  // Try with "bottiglia png" for transparent background
+  const query = req.nextUrl.searchParams.get("q");
+  if (!query || query.length > 200) {
+    return NextResponse.json({ error: "Query mancante o troppo lunga" }, { status: 400 });
+  }
+
   const imageUrl = await searchBingImages(`${query} bottiglia png`, true);
 
   if (imageUrl) {
     return NextResponse.json(
       { imageUrl },
-      {
-        headers: {
-          "Cache-Control": "public, max-age=86400, s-maxage=86400",
-        },
-      }
+      { headers: { "Cache-Control": "public, max-age=86400, s-maxage=86400" } }
     );
   }
 
-  // Fallback: simpler query
   const fallback = await searchBingImages(`${query} bottiglia vino`, true);
   return NextResponse.json(
     { imageUrl: fallback },
-    {
-      headers: {
-        "Cache-Control": "public, max-age=86400, s-maxage=86400",
-      },
-    }
+    { headers: { "Cache-Control": "public, max-age=86400, s-maxage=86400" } }
   );
 }

@@ -17,7 +17,8 @@ export default function LanguageToggle() {
       }}
     >
       <button
-        onClick={() => i18n.changeLanguage("it")}
+        onClick={() => { i18n.changeLanguage("it"); document.documentElement.lang = "it"; }}
+        aria-pressed={currentLang === "it"}
         className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded transition-colors duration-200"
         style={{
           color: currentLang === "it" ? "var(--color-gold)" : "var(--color-muted)",
@@ -27,7 +28,8 @@ export default function LanguageToggle() {
       </button>
       <span className="flex items-center" style={{ color: "var(--color-muted)" }}>|</span>
       <button
-        onClick={() => i18n.changeLanguage("en")}
+        onClick={() => { i18n.changeLanguage("en"); document.documentElement.lang = "en"; }}
+        aria-pressed={currentLang === "en"}
         className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded transition-colors duration-200"
         style={{
           color: currentLang === "en" ? "var(--color-gold)" : "var(--color-muted)",
