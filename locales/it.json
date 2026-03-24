@@ -12,11 +12,14 @@
     "analyze": "Analizza"
   },
   "loading": {
+    "headline": "Un buon vino richiede pazienza...",
     "messages": [
       "Il sommelier sta annusando...",
       "Consultando la cantina...",
       "Decifrando l'annata...",
-      "Abbinando i sapori..."
+      "Abbinando i sapori...",
+      "Facendo roteare il calice...",
+      "Controllando il colore alla luce..."
     ]
   },
   "result": {

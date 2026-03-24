@@ -43,6 +43,16 @@ export default function LoadingWine() {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
+      <h2
+        className="text-2xl md:text-3xl font-bold text-center px-6"
+        style={{
+          fontFamily: "var(--font-playfair)",
+          color: "var(--color-gold)",
+        }}
+      >
+        {t("loading.headline")}
+      </h2>
+
       <div className="relative w-16 h-16 md:w-20 md:h-20">
         <div
           className="absolute inset-0 rounded-full animate-spin"

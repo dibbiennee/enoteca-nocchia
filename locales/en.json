@@ -12,11 +12,14 @@
     "analyze": "Analyze"
   },
   "loading": {
+    "headline": "A good wine takes patience...",
     "messages": [
       "The sommelier is nosing...",
       "Consulting the cellar...",
       "Deciphering the vintage...",
-      "Pairing the flavors..."
+      "Pairing the flavors...",
+      "Swirling the glass...",
+      "Checking the color in the light..."
     ]
   },
   "result": {
